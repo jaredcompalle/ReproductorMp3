@@ -1,22 +1,35 @@
 using WMPLib;
+using System.IO;
 
 namespace ReproductorMp3
 {
     public partial class Form1 : Form
     {
+        WindowsMediaPlayer reproductor = new WindowsMediaPlayer();
+        private List<string> rutasArchivoMusica = new List<string>();
+
         public Form1()
         {
             InitializeComponent();
         }
-
         private void findArchive_Click(object sender, EventArgs e)
         {
             OpenFileDialog buscador = new OpenFileDialog();
+            buscador.Filter = "Archivos de Audio|*.mp3;*.wav;*.wma";
+            buscador.Multiselect = true;
 
             if (buscador.ShowDialog() == DialogResult.OK)
             {
-                buscador.Filter = "Archivos de Audio|*.mp3;*.wav;*.wma";
-                listMusic.Items.Add(buscador.FileName);
+                foreach (string rutaCompleta in buscador.FileNames)
+                {
+                    if (!rutasArchivoMusica.Contains(rutaCompleta))
+                    {
+                        rutasArchivoMusica.Add(rutaCompleta); 
+
+                        string nombreCorto = Path.GetFileName(rutaCompleta);
+                        listMusic.Items.Add(nombreCorto);
+                    }
+                }
             }
         }
 
@@ -25,19 +38,25 @@ namespace ReproductorMp3
 
         }
 
-        WindowsMediaPlayer reproductor = new WindowsMediaPlayer();
         private void btnPlayMusic_Click(object sender, EventArgs e)
         {
-            if (reproductor.playState == WMPLib.WMPPlayState.wmppsPaused)
+            if (reproductor.playState == WMPPlayState.wmppsPaused)
             {
                 reproductor.controls.play();
+                timerMusic.Start();
             }
             else if (listMusic.SelectedIndex != -1)
             {
-                reproductor.URL = listMusic.SelectedItem.ToString();
+                int indiceSeleccionado = listMusic.SelectedIndex;
+                reproductor.URL = rutasArchivoMusica[indiceSeleccionado];
+
                 reproductor.controls.play();
+                timerMusic.Start(); 
             }
-            //error
+            else
+            {
+                MessageBox.Show("Selecciona una camcion primero", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void btnPause_Click(object sender, EventArgs e)
