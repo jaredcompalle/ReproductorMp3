@@ -105,7 +105,6 @@
             lblTimerSong.Size = new Size(34, 15);
             lblTimerSong.TabIndex = 5;
             lblTimerSong.Text = "00:00";
-            lblTimerSong.Click += label1_Click;
             // 
             // lblSongDuration
             // 
@@ -115,7 +114,6 @@
             lblSongDuration.Size = new Size(34, 15);
             lblSongDuration.TabIndex = 6;
             lblSongDuration.Text = "00:00";
-            lblSongDuration.Click += label1_Click_1;
             // 
             // btnQuitMusic
             // 
@@ -141,8 +139,7 @@
             Controls.Add(listMusic);
             Controls.Add(findArchive);
             Name = "Form1";
-            Text = "Form1";
-            Load += Form1_Load;
+            Text = "Reproductor de Musica";
             ((System.ComponentModel.ISupportInitialize)barProgress).EndInit();
             ResumeLayout(false);
             PerformLayout();

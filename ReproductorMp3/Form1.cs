@@ -66,15 +66,15 @@ namespace ReproductorMp3
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-
-            if (reproductor.playState == WMPLib.WMPPlayState.wmppsPlaying)
+            if (reproductor.playState == WMPPlayState.wmppsPlaying)
             {
-                barProgress.Maximum = (int)reproductor.currentMedia.duration;
-
-                barProgress.Value = (int)reproductor.controls.currentPosition;
+                if (reproductor.currentMedia.duration > 0)
+                {
+                    barProgress.Maximum = (int)reproductor.currentMedia.duration;
+                    barProgress.Value = (int)reproductor.controls.currentPosition;
+                }
 
                 lblTimerSong.Text = reproductor.controls.currentPositionString;
-
                 lblSongDuration.Text = reproductor.currentMedia.durationString;
             }
         }
@@ -99,27 +99,34 @@ namespace ReproductorMp3
 
         private void barProgress_MouseUp(object sender, MouseEventArgs e)
         {
-            reproductor.controls.currentPosition = barProgress.Value;
+            if (reproductor.currentMedia != null)
+            {
+                reproductor.controls.currentPosition = barProgress.Value;
+            }
 
-            if (reproductor.playState == WMPLib.WMPPlayState.wmppsPlaying)
+            if (reproductor.playState == WMPPlayState.wmppsPlaying)
             {
                 timerMusic.Start();
             }
         }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnQuitMusic_Click(object sender, EventArgs e)
         {
+            if (listMusic.SelectedIndex != -1)
+            {
+                int indice = listMusic.SelectedIndex;
 
+                if (reproductor.playState == WMPPlayState.wmppsPlaying && reproductor.URL == rutasArchivoMusica[indice])
+                {
+                    reproductor.controls.stop();
+                    timerMusic.Stop();
+                    barProgress.Value = 0;
+                    lblTimerSong.Text = "00:00";
+                    lblSongDuration.Text = "00:00";
+                }
+
+                rutasArchivoMusica.RemoveAt(indice);
+                listMusic.Items.RemoveAt(indice);
+            }
         }
     }
 }
